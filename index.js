@@ -2,36 +2,52 @@ import { tweetsData } from './data.js'
 const tweetInput = document.getElementById('tweet-input')
 const tweetBtn = document.getElementById('tweet-btn')
 
-tweetBtn.addEventListener('click', function(){
-    console.log(tweetInput.value)
+tweetBtn.addEventListener('click', function() {
+  console.log(tweetInput.value)
 })
 
-document.addEventListener('click', function(e){
-    if(e.target.dataset.like){
-       handleLikeClick(e.target.dataset.like) 
-    }
+document.addEventListener('click', function(e) {
+  if (e.target.dataset.like) {
+    handleLikeClick(e.target.dataset.like)
+  }
+
+  if (e.target.dataset.retweet) {
+    handleRetweetClick(e.target.dataset.retweet)
+  }
 })
 
-function handleLikeClick(tweetId){ 
-    const targetTweetObj = tweetsData.filter(function(tweet){
-        return tweet.uuid === tweetId
-    })[0]
+function handleLikeClick(tweetId) {
+  const targetTweetObj = tweetsData.filter(function(tweet) {
+    return tweet.uuid === tweetId
+  })[0]
 
-    if (targetTweetObj.isLiked){
-        targetTweetObj.likes--
-    }
-    else{
-        targetTweetObj.likes++ 
-    }
-    targetTweetObj.isLiked = !targetTweetObj.isLiked
-    render()
+  if (targetTweetObj.isLiked) {
+    targetTweetObj.likes--
+  } else {
+    targetTweetObj.likes++
+  }
+  targetTweetObj.isLiked = !targetTweetObj.isLiked
+  render()
 }
 
-function getFeedHtml(){
-    let feedHtml = ``
-    
-    tweetsData.forEach(function(tweet){
-        feedHtml += `
+function handleRetweetClick(tweetId) {
+  const targetRetweetObj = tweetsData.filter(tweet => {
+    return tweet.uuid === tweetId
+  })[0]
+  if (targetRetweetObj.isRetweeted) {
+    targetRetweetObj.retweets--
+  } else {
+    targetRetweetObj.retweets++
+  }
+  targetRetweetObj.isRetweeted = !targetRetweetObj.isRetweeted
+  render()
+}
+
+function getFeedHtml() {
+  let feedHtml = ``
+
+  tweetsData.forEach(function(tweet) {
+    feedHtml += `
 <div class="tweet">
     <div class="tweet-inner">
         <img src="${tweet.profilePic}" class="profile-pic">
@@ -62,13 +78,12 @@ function getFeedHtml(){
     </div>
 </div>
 `
-   })
-   return feedHtml 
+  })
+  return feedHtml
 }
 
-function render(){
-    document.getElementById('feed').innerHTML = getFeedHtml()
+function render() {
+  document.getElementById('feed').innerHTML = getFeedHtml()
 }
 
 render()
-
